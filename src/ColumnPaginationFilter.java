@@ -93,6 +93,10 @@ public final class ColumnPaginationFilter extends ScanFilter {
     writeVarint(buf, this.offset);
   }
 
+  public void getSerialize(ChannelBuffer buf) {
+    serialize(buf);
+  }
+
   public String toString() {
     return "ColumnPaginationFilter(limit=" + limit
       + ", offset=" + offset + ")";
