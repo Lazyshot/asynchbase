@@ -573,7 +573,7 @@ final public class TestIntegration {
     scanner.setFamily(family);
     scanner.setStartKey("crf1");
     scanner.setStopKey("crf3");
-    scanner.setFilter(new ColumnPaginationFilter("qb", true, "qd4", false));
+    scanner.setFilter(new ColumnPaginationFilter(1, 2));
     final ArrayList<ArrayList<KeyValue>> rows = scanner.nextRows().join();
     assertSizeIs(1, rows);  // Only one row to start with which has a non-empty filtered column set
     ArrayList<KeyValue> kvs = rows.get(0);
