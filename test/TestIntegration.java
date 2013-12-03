@@ -574,14 +574,10 @@ final public class TestIntegration {
     Deferred.group(Deferred.group(client.put(put1), client.put(put2)),
                    Deferred.group(client.put(put3), client.put(put4))).join();
     final Scanner scanner = client.newScanner(table);
-    final ColumnPaginationFilter cpf = new ColumnPaginationFilter(1, 2);
     scanner.setFamily(family);
     scanner.setStartKey("crf1");
-    scanner.setStopKey("crf3");
-    scanner.setFilter(cpf);
-    ChannelBuffer cb = ChannelBuffers.dynamicBuffer(cpf.getSize());
-    cpf.getSerialize(cb);
-    System.out.println("CPF Serialized: " + java.util.Arrays.toString(cb.array()));
+    scanner.setStopKey("crf1");
+    scanner.setFilter(new ColumnPaginationFilter(2, 1));
     final ArrayList<ArrayList<KeyValue>> rows = scanner.nextRows().join();
     assertSizeIs(1, rows);  // Only one row to start with which has a non-empty filtered column set
     ArrayList<KeyValue> kvs = rows.get(0);

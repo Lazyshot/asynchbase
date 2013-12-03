@@ -29,7 +29,7 @@ package org.hbase.async;
 import org.jboss.netty.buffer.ChannelBuffer;
 
 /**
- * Filters based on a range of column qualifiers.
+ * Filters based on a limit and offset of number of columns. I.e. Pagination.
  * @since 1.5
  */
 public final class ColumnPaginationFilter extends ScanFilter {
@@ -54,42 +54,24 @@ public final class ColumnPaginationFilter extends ScanFilter {
 
   @Override
   int predictSerializedSize() {
-    return 1 + varintSize(limit)
-      + 1 + varintSize(offset);
-  }
-
-  int varintSize(int value) {
-    if ((value & (0xffffffff <<  7)) == 0) return 1;
-    if ((value & (0xffffffff << 14)) == 0) return 2;
-    if ((value & (0xffffffff << 21)) == 0) return 3;
-    if ((value & (0xffffffff << 28)) == 0) return 4;
-    return 5;
-  }
-
-  void writeVarint(ChannelBuffer buf, int value) {
-    while (true) {
-      if ((value & ~0x7F) == 0) {
-        buf.writeByte(value);
-        return;
-      } else {
-        buf.writeByte((value & 0x7F) | 0x80);
-        value >>>= 7;
-      }
-    }
+    return 1 + NAME.length
+      + 4 + 4;
   }
 
   @Override
   void serialize(ChannelBuffer buf) {
-    // buf.writeByte((byte) NAME.length);
-    // buf.writeBytes(NAME);
+    buf.writeByte((byte) NAME.length);
+    buf.writeBytes(NAME);
 
     // Limit
     // writeVarint(buf, 8); // Tag
-    writeVarint(buf, this.limit);
+    // writeVarint(buf, this.limit);
+    buf.writeInt(this.limit);
 
     // Integer Offset
-    //writeVarint(buf, 16); // Tag
-    writeVarint(buf, this.offset);
+    // writeVarint(buf, 16); // Tag
+    // writeVarint(buf, this.offset);
+    buf.writeInt(this.offset);
   }
 
   public void getSerialize(ChannelBuffer buf) {
