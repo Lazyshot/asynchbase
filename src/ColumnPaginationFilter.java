@@ -54,8 +54,7 @@ public final class ColumnPaginationFilter extends ScanFilter {
 
   @Override
   int predictSerializedSize() {
-    return 1 + NAME.length
-      + 1 + varintSize(limit)
+    return 1 + varintSize(limit)
       + 1 + varintSize(offset);
   }
 
@@ -81,20 +80,24 @@ public final class ColumnPaginationFilter extends ScanFilter {
 
   @Override
   void serialize(ChannelBuffer buf) {
-    buf.writeByte((byte) NAME.length);
-    buf.writeBytes(NAME);
+    // buf.writeByte((byte) NAME.length);
+    // buf.writeBytes(NAME);
 
     // Limit
-    writeVarint(buf, 8); // Tag
+    // writeVarint(buf, 8); // Tag
     writeVarint(buf, this.limit);
 
     // Integer Offset
-    writeVarint(buf, 16); // Tag
+    //writeVarint(buf, 16); // Tag
     writeVarint(buf, this.offset);
   }
 
   public void getSerialize(ChannelBuffer buf) {
     serialize(buf);
+  }
+
+  public int getSize() {
+    return predictSerializedSize();
   }
 
   public String toString() {

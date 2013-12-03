@@ -579,9 +579,9 @@ final public class TestIntegration {
     scanner.setStartKey("crf1");
     scanner.setStopKey("crf3");
     scanner.setFilter(cpf);
-    ChannelBuffer cb = ChannelBuffers.dynamicBuffer();
-    cpf.serialize(cb);
-    System.out.println(java.util.Arrays.toString(cb.array()));
+    ChannelBuffer cb = ChannelBuffers.dynamicBuffer(cpf.getSize());
+    cpf.getSerialize(cb);
+    System.out.println("CPF Serialized: " + java.util.Arrays.toString(cb.array()));
     final ArrayList<ArrayList<KeyValue>> rows = scanner.nextRows().join();
     assertSizeIs(1, rows);  // Only one row to start with which has a non-empty filtered column set
     ArrayList<KeyValue> kvs = rows.get(0);
